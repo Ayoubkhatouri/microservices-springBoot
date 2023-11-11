@@ -17,7 +17,8 @@ public class BankAccount {
     private String currency;
     @Enumerated(EnumType.STRING)
     private AccountType type;
-    @Transient //this annotation tels spring to ignore this attribute cause it Customer is not an entity in this service
+    @Transient //this annotation tels spring to ignore this attribute cause 
+    Customer is not an entity in this service
     private Customer customer;
     private Long CustomerId;
 }
