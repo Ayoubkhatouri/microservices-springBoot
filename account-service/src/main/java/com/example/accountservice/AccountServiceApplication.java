@@ -1,5 +1,6 @@
 package com.example.accountservice;
 
+import com.example.accountservice.clients.CustomerRestClient;
 import com.example.accountservice.entities.BankAccount;
 import com.example.accountservice.enums.AccountType;
 import com.example.accountservice.repositories.BankAccountRepository;
@@ -21,25 +22,28 @@ public class AccountServiceApplication {
 	}
 
 	@Bean
-	CommandLineRunner commandLineRunner(BankAccountRepository bankAccountRepository){
+	CommandLineRunner commandLineRunner(BankAccountRepository bankAccountRepository, CustomerRestClient customerRestClient){
 		return args -> {
-			bankAccountRepository.save(BankAccount.builder()
-							.accountId(UUID.randomUUID().toString())
-							.currency("MAD")
-							.balance(98000)
-							.createdAt(LocalDate.now())
-							.type(AccountType.CURRENT_ACCOUNT)
-							.CustomerId(1L)
-					.build());
+			customerRestClient.allCustomers().forEach(c->{
+				bankAccountRepository.save(BankAccount.builder()
+						.accountId(UUID.randomUUID().toString())
+						.currency("MAD")
+						.balance(Math.random()*80000)
+						.createdAt(LocalDate.now())
+						.type(AccountType.CURRENT_ACCOUNT)
+						.CustomerId(c.getId())
+						.build());
 
-			bankAccountRepository.save(BankAccount.builder()
-					.accountId(UUID.randomUUID().toString())
-					.currency("MAD")
-					.balance(12000)
-					.createdAt(LocalDate.now())
-					.type(AccountType.SAVING_ACDOUNT)
-					.CustomerId(2L)
-					.build());
+				bankAccountRepository.save(BankAccount.builder()
+						.accountId(UUID.randomUUID().toString())
+						.currency("MAD")
+						.balance(Math.random()*55244)
+						.createdAt(LocalDate.now())
+						.type(AccountType.SAVING_ACDOUNT)
+						.CustomerId(c.getId())
+						.build());
+			});
+
 		};
 	}
 }
