@@ -1,7 +1,9 @@
 package com.example.accountservice.web;
 
 
+import com.example.accountservice.clients.CustomerRestClient;
 import com.example.accountservice.entities.BankAccount;
+import com.example.accountservice.models.Customer;
 import com.example.accountservice.repositories.BankAccountRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 public class AccountController {
     private BankAccountRepository bankAccountRepository;
+    private CustomerRestClient customerRestClient;
 
     @GetMapping("/accounts")
     public List<BankAccount> accountList(){
@@ -23,6 +26,9 @@ public class AccountController {
 
     @GetMapping("/accounts/{id}")
     public BankAccount getBankAccount(@PathVariable String id){
-        return bankAccountRepository.findById(id).get();
+        BankAccount bankAccount= bankAccountRepository.findById(id).get();
+        Customer customer=customerRestClient.findCustomerById(bankAccount.getCustomerId());
+        bankAccount.setCustomer(customer);
+        return bankAccount;
     }
 }
